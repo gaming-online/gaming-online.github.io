@@ -1,14 +1,8 @@
 [
   {
-    "title": "Prison Life",
-    "description": "Live life as a prisoner and escape, or become a guard and defend the prison!",
-    "thumbnail": "assets/",
-    "version": "1.0"
-  },
-  {
-    "title": "Prison Life",
-    "description": "Live life as a prisoner and escape, or become a guard and defend the prison!",
-    "thumbnail": "https://tr.rbxcdn.com/180DAY-3c69710523b585b62f53aa0d4c6c32ed/768/432/Image/Webp/noFilter",
-    "version": "1.0"
+    "title": "Stickman Hook",
+    "description": "Be a stickman and use your hook to swing!",
+    "thumbnail": "assets/stickman-hook.png",
+    "iframe": "https://db2.quackprep.org/2025/unity4/cubecraft-survival/pre.html"
   }
 ]
