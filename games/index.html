@@ -105,7 +105,7 @@
 
         async function loadGames() {
             // Replace with your actual JSON path
-            const response = await fetch('assets/games.json');
+            const response = await fetch('../assets/games.json');
             allGames = await response.json();
             
             // Check if URL has a specific game: ?game=stickman-hook
