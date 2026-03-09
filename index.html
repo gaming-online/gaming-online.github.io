@@ -3,228 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Games | Sleek Play</title>
+    <title>Nexus | Digital Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #0f051d;
-            --card-bg: #1e142d;
-            --accent-primary: #8a2be2;
-            --accent-secondary: #4b0082;
-            --text-main: #e0e0e0;
-            --text-dim: #a0a0a0;
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --bg: #0b0514;
+            --card: #160d25;
+            --accent: #8a2be2;
+            --accent-glow: rgba(138, 43, 226, 0.4);
+            --text: #ffffff;
+            --text-dim: #a096b1;
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            overflow-x: hidden;
-            background: radial-gradient(circle at top right, #1a0b2e, #0f051d);
-            min-height: 100vh;
-        }
-
-        /* --- Navigation --- */
-        nav {
+            margin: 0;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            padding: 1rem 5%;
-            background: rgba(15, 5, 29, 0.8);
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(138, 43, 226, 0.2);
-        }
-
-        .logo img { height: 40px; cursor: pointer; transition: var(--transition); }
-        .logo img:hover { transform: scale(1.05); filter: drop-shadow(0 0 8px var(--accent-primary)); }
-
-        .nav-links { display: flex; gap: 2rem; }
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-dim);
-            font-weight: 600;
-            transition: var(--transition);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .nav-links a:hover, .nav-links a.active { color: var(--accent-primary); text-shadow: 0 0 10px var(--accent-primary); }
-
-        /* --- Main Content --- */
-        .container { padding: 2rem 5%; }
-
-        /* Game Grid */
-        .game-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 1.5rem;
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        .game-card {
-            background: var(--card-bg);
-            border-radius: 12px;
+            justify-content: center;
+            min-height: 100vh;
             overflow: hidden;
-            cursor: pointer;
-            transition: var(--transition);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            position: relative;
+            background: radial-gradient(circle at center, #1a0b2e 0%, #0b0514 100%);
         }
 
-        .game-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5), 0 0 15px rgba(138, 43, 226, 0.3);
-            border-color: var(--accent-primary);
-        }
+        h1 { font-family: 'Outfit', sans-serif; font-size: 3rem; margin-bottom: 2rem; }
 
-        .game-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
-        .game-info { padding: 10px; text-align: center; }
-        .game-info h3 { font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        /* --- Game Player View --- */
-        #game-view { display: none; flex-direction: column; align-items: center; gap: 1rem; }
-        .iframe-container {
-            width: 100%;
-            max-width: 1000px;
-            aspect-ratio: 16/9;
-            background: #000;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 0 40px rgba(0,0,0,0.8);
-            position: relative;
-        }
-        iframe { width: 100%; height: 100%; border: none; }
-        
-        .game-controls {
+        .hub-container {
             display: flex;
-            gap: 1rem;
-            width: 100%;
-            max-width: 1000px;
-            justify-content: space-between;
+            gap: 2rem;
+            animation: fadeIn 1s ease-out;
         }
 
-        .btn {
-            background: var(--card-bg);
+        .hub-card {
+            width: 250px;
+            height: 350px;
+            background: var(--card);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
             color: white;
-            border: 1px solid var(--accent-primary);
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
         }
-        .btn:hover { background: var(--accent-primary); box-shadow: 0 0 15px var(--accent-primary); }
 
-        /* Animations */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
+        .hub-card i { font-size: 3.5rem; color: var(--accent); margin-bottom: 1.5rem; transition: 0.3s; }
+
+        .hub-card:hover {
+            transform: translateY(-15px);
+            border-color: var(--accent);
+            box-shadow: 0 15px 30px var(--accent-glow);
+        }
+
+        .hub-card:hover i { transform: scale(1.2); text-shadow: 0 0 20px var(--accent); }
+
+        .hub-card span { font-family: 'Outfit', sans-serif; font-size: 1.5rem; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        /* Utilities */
-        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo" onclick="showHome()">
-            <img src="assets/logo.png" alt="Nexus Logo">
-        </div>
-        <div class="nav-links">
-            <a href="#" onclick="showHome()" class="active">Games</a>
-            <a href="#" onclick="alert('AI Module Loading...')">Unrestricted AI</a>
-            <a href="#" onclick="alert('Calculator Coming Soon')">Calculator</a>
-        </div>
-    </nav>
+    <h1>NEXUS</h1>
 
-    <div class="container">
-        <div id="home-view">
-            <h2 style="margin-bottom: 2rem;">Trending Games</h2>
-            <div class="game-grid" id="game-grid">
-                </div>
-        </div>
-
-        <div id="game-view">
-            <div class="game-controls">
-                <button class="btn" onclick="showHome()"><i class="fas fa-arrow-left"></i> Back</button>
-                <h2 id="current-game-title">Game Title</h2>
-                <button class="btn" onclick="toggleFullscreen()"><i class="fas fa-expand"></i> Fullscreen</button>
-            </div>
-            <div class="iframe-container" id="iframe-holder">
-                <iframe src="" id="game-frame" allowfullscreen></iframe>
-            </div>
-        </div>
+    <div class="hub-container">
+        <a href="?page=games" class="hub-card">
+            <i class="fas fa-gamepad"></i>
+            <span>Games</span>
+        </a>
+        <a href="#" class="hub-card" style="opacity: 0.5; cursor: not-allowed;">
+            <i class="fas fa-robot"></i>
+            <span>Unrestricted AI</span>
+        </a>
+        <a href="#" class="hub-card" style="opacity: 0.5; cursor: not-allowed;">
+            <i class="fas fa-calculator"></i>
+            <span>Calculator</span>
+        </a>
     </div>
 
     <script>
-        // 2. The Logic (The Brains)
-        let gamesData = [];
-
-        async function init() {
-            try {
-                const response = await fetch('assets/games.json');
-                gamesData = await response.json();
-                renderGames(gamesData);
-            } catch (err) {
-                console.error("Error loading games. Make sure assets/games.json exists!", err);
-            }
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('page') === 'games') {
+            window.location.href = 'games.html'; // Redirecting to your sub-page
         }
-
-        function renderGames(games) {
-            const grid = document.getElementById('game-grid');
-            grid.innerHTML = games.map(game => `
-                <div class="game-card" onclick="loadGame('${game.title.replace(/'/g, "\\'")}')">
-                    <img src="${game.thumbnail}" alt="${game.title}">
-                    <div class="game-info">
-                        <h3>${game.title}</h3>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function loadGame(title) {
-            const game = gamesData.find(g => g.title === title);
-            if (!game) return;
-
-            // Update URL and UI
-            window.location.hash = `games/${game.title.toLowerCase().replace(/\s+/g, '-')}`;
-            document.getElementById('home-view').classList.add('hidden');
-            document.getElementById('game-view').style.display = 'flex';
-            
-            document.getElementById('current-game-title').innerText = game.title;
-            document.getElementById('game-frame').src = game.iframe;
-        }
-
-        function showHome() {
-            window.location.hash = '';
-            document.getElementById('home-view').classList.remove('hidden');
-            document.getElementById('game-view').style.display = 'none';
-            document.getElementById('game-frame').src = '';
-        }
-
-        function toggleFullscreen() {
-            const elem = document.getElementById('iframe-holder');
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen();
-            } else if (elem.webkitRequestFullscreen) { /* Safari */
-                elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) { /* IE11 */
-                elem.msRequestFullscreen();
-            }
-        }
-
-        // Initialize on load
-        window.onload = init;
-
-        // Handle browser back/forward buttons
-        window.onhashchange = () => {
-            if (!window.location.hash) showHome();
-        };
     </script>
 </body>
 </html>
