@@ -1,162 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus | Games</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        /* Shared Styles from above + Gallery Specifics */
-        body { background: #0b0514; color: white; font-family: 'Inter', sans-serif; padding: 2rem; }
-        
-        .header-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto 3rem auto;
-        }
+<div id="game-list" class="game-grid"></div>
 
-        .search-container {
-            position: relative;
-            width: 300px;
-        }
-
-        .search-container input {
-            width: 100%;
-            background: #160d25;
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 12px 20px 12px 45px;
-            border-radius: 30px;
-            color: white;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        .search-container input:focus { border-color: #8a2be2; box-shadow: 0 0 15px rgba(138,43,226,0.3); }
-
-        .search-container i { position: absolute; left: 18px; top: 14px; color: #a096b1; }
-
-        .game-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .game-card {
-            position: relative;
-            aspect-ratio: 1/1;
-            border-radius: 15px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .game-card img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* The Hover Reveal Name */
-        .game-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(transparent, rgba(0,0,0,0.9));
-            display: flex;
-            align-items: flex-end;
-            padding: 15px;
-            opacity: 0; /* Hidden by default */
-            transition: 0.3s ease;
-            transform: translateY(10px);
-        }
-
-        .game-card:hover .game-overlay {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .game-card:hover { transform: scale(1.05); }
-
-        /* Fullscreen Player Styles */
-        #player-view { display: none; position: fixed; inset: 0; background: #000; z-index: 2000; }
-        iframe { width: 100vw; height: 100vh; border: none; }
-        .back-btn { position: absolute; top: 20px; left: 20px; z-index: 2001; background: #8a2be2; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
-    </style>
-</head>
-<body>
-
-    <div class="header-actions">
-        <h2 style="font-family: 'Outfit';">GAMES</h2>
-        <div class="search-container">
-            <i class="fas fa-search"></i>
-            <input type="text" id="gameSearch" placeholder="Search games..." onkeyup="searchGames()">
-        </div>
-    </div>
-
-    <div class="game-grid" id="gameGrid"></div>
-
-    <div id="player-view">
-        <button class="back-btn" onclick="closeGame()"><i class="fas fa-arrow-left"></i> Exit</button>
-        <iframe src="" id="gameFrame"></iframe>
-    </div>
-
-    <script>
-        let allGames = [];
-
-        async function loadGames() {
-            // Replace with your actual JSON path
-            const response = await fetch('../assets/games.json');
-            allGames = await response.json();
-            
-            // Check if URL has a specific game: ?game=stickman-hook
-            const urlParams = new URLSearchParams(window.location.search);
-            const gameRequested = urlParams.get('game');
-            if(gameRequested) {
-                const game = allGames.find(g => g.title.toLowerCase().replace(/\s+/g, '-') === gameRequested);
-                if(game) launchGame(game.iframe);
-            }
-
-            renderGames(allGames);
-        }
-
-        function renderGames(games) {
-            const grid = document.getElementById('gameGrid');
-            grid.innerHTML = games.map(game => `
-                <div class="game-card" onclick="openGameLink('${game.title}')">
-                    <img src="${game.thumbnail}" alt="${game.title}">
-                    <div class="game-overlay">
-                        <span>${game.title}</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function searchGames() {
-            const query = document.getElementById('gameSearch').value.toLowerCase();
-            const filtered = allGames.filter(g => g.title.toLowerCase().includes(query));
-            renderGames(filtered);
-        }
-
-        function openGameLink(title) {
-            const slug = title.toLowerCase().replace(/\s+/g, '-');
-            // This updates the URL to look like your requested format
-            window.history.pushState({}, '', `?game=${slug}`);
-            const game = allGames.find(g => g.title === title);
-            launchGame(game.iframe);
-        }
-
-        function launchGame(url) {
-            document.getElementById('player-view').style.display = 'block';
-            document.getElementById('gameFrame').src = url;
-        }
-
-        function closeGame() {
-            document.getElementById('player-view').style.display = 'none';
-            document.getElementById('gameFrame').src = '';
-            window.history.pushState({}, '', 'games.html');
-        }
-
-        loadGames();
-    </script>
-</body>
-</html>
+<script>
+    fetch('../assets/games.json')
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById('game-list');
+            data.forEach(game => {
+                const card = document.createElement('div');
+                card.className = 'game-card';
+                // Redirects to game-view using a query param for simplicity
+                card.onclick = () => window.location.href = `play?game=${encodeURIComponent(game.title)}`;
+                card.innerHTML = `
+                    <img src="${game.thumbnail}">
+                    <h3>${game.title}</h3>
+                `;
+                container.appendChild(card);
+            });
+        });
+</script>
