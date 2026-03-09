@@ -1,102 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus | Digital Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root {
-            --bg: #0b0514;
-            --card: #160d25;
-            --accent: #8a2be2;
-            --accent-glow: rgba(138, 43, 226, 0.4);
-            --text: #ffffff;
-            --text-dim: #a096b1;
-        }
-
-        body {
-            margin: 0;
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            overflow: hidden;
-            background: radial-gradient(circle at center, #1a0b2e 0%, #0b0514 100%);
-        }
-
-        h1 { font-family: 'Outfit', sans-serif; font-size: 3rem; margin-bottom: 2rem; }
-
-        .hub-container {
-            display: flex;
-            gap: 2rem;
-            animation: fadeIn 1s ease-out;
-        }
-
-        .hub-card {
-            width: 250px;
-            height: 350px;
-            background: var(--card);
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hub-card i { font-size: 3.5rem; color: var(--accent); margin-bottom: 1.5rem; transition: 0.3s; }
-
-        .hub-card:hover {
-            transform: translateY(-15px);
-            border-color: var(--accent);
-            box-shadow: 0 15px 30px var(--accent-glow);
-        }
-
-        .hub-card:hover i { transform: scale(1.2); text-shadow: 0 0 20px var(--accent); }
-
-        .hub-card span { font-family: 'Outfit', sans-serif; font-size: 1.5rem; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <title>Gaming.Online | School Cheats</title>
 </head>
 <body>
+    <nav>
+        <div class="logo"><img src="assets/logo.png" alt="Logo"></div>
+    </nav>
 
-    <h1>NEXUS</h1>
-
-    <div class="hub-container">
-        <a href="games" class="hub-card">
-            <i class="fas fa-gamepad"></i>
-            <span>Games</span>
-        </a>
-        <a href="#" class="hub-card" style="opacity: 0.5; cursor: not-allowed;">
-            <i class="fas fa-robot"></i>
-            <span>Unrestricted AI</span>
-        </a>
-        <a href="#" class="hub-card" style="opacity: 0.5; cursor: not-allowed;">
-            <i class="fas fa-calculator"></i>
-            <span>Calculator</span>
-        </a>
+    <div class="hero" style="text-align: center; margin-top: 100px;">
+        <h1>Welcome to <span style="color: var(--accent-purple)">Gaming.Online</span></h1>
+        <p>Unrestricted access to everything you need.</p>
+        
+        <div class="btn-container">
+            <a href="games" class="nav-card">
+                <h2>🎮</h2>
+                <h3>Games</h3>
+            </a>
+            <a href="ai" class="nav-card">
+                <h2>🤖</h2>
+                <h3>Unrestricted AI</h3>
+            </a>
+            <a href="calculator" class="nav-card">
+                <h2>🧮</h2>
+                <h3>Calculator</h3>
+            </a>
+        </div>
     </div>
-
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('page') === 'games') {
-            window.location.href = 'games.html'; // Redirecting to your sub-page
-        }
-    </script>
 </body>
 </html>
