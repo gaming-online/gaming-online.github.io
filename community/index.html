@@ -1,95 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Community | Gaming.Online</title>
-    <link rel="stylesheet" href="../style.css">
+<meta charset='UTF-8'>
+<title>Community</title>
+<link rel='stylesheet' href='../assets/style.css'>
+<script src='../assets/main.js' defer></script>
+<script src='community.js' defer></script>
 </head>
+
 <body>
-    <nav>
-        <h2>Gaming.Online</h2>
-        <div class="nav-links">
-            <a href="../">Home</a>
-            <a href="../games">Games</a>
-        </div>
-    </nav>
-    
-    <div class="container">
-        <h1>Community</h1>
-        <p>Join our Discord server to chat, or suggest a game below!</p>
-        <a href="https://discord.gg/d83JBdMsGq" target="_blank" class="btn" style="background-color: #5865F2;">Join our Discord</a>
-        
-        <hr style="border-color: #333; margin: 40px 0;">
 
-        <h2>Suggest a Game</h2>
-        <form id="suggestionForm">
-            <input type="text" id="gameName" placeholder="Game Name" required>
-            <textarea id="gameDesc" placeholder="Game Description" required></textarea>
-            <input type="url" id="gameLink" placeholder="Game Link (Optional)">
-            <button type="submit" class="btn">Submit Request</button>
-            <p id="formStatus" style="font-size: 0.9rem; margin-top: 10px;"></p>
-        </form>
-    </div>
+<header>
+<h1>Community</h1>
+<a href='https://discord.gg/d83JBdMsGq'>Join Discord</a>
+</header>
 
-    <script src="../main.js"></script>
-    <script>
-        const form = document.getElementById('suggestionForm');
-        const statusText = document.getElementById('formStatus');
-        
-        // IMPORTANT: In a real environment, send this to a backend script, not directly to Discord.
-        const WEBHOOK_URL = "YOUR_HIDDEN_BACKEND_OR_WEBHOOK_URL_HERE";
+<div>
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const name = document.getElementById('gameName').value.trim();
-            const desc = document.getElementById('gameDesc').value.trim();
-            const link = document.getElementById('gameLink').value.trim();
+<input id='GameName' placeholder='Game Name'>
+<input id='GameLink' placeholder='Game Link'>
+<textarea id='GameDesc' placeholder='Description'></textarea>
 
-            // Check Local Storage for rate limiting
-            let requestedGames = JSON.parse(localStorage.getItem('requestedGames')) || [];
-            
-            if (requestedGames.includes(name.toLowerCase())) {
-                statusText.style.color = "#ff4d4d";
-                statusText.innerText = "You have already requested this game!";
-                return;
-            }
+<button id='Request'>Request Game</button>
 
-            // Construct Discord Webhook Payload
-            const payload = {
-                embeds: [{
-                    title: "🎮 New Game Suggestion",
-                    color: 10307565, // Purple
-                    fields: [
-                        { name: "Name", value: name },
-                        { name: "Description", value: desc },
-                        { name: "Link", value: link || "No link provided" }
-                    ]
-                }]
-            };
+</div>
 
-            try {
-                // Remove the standard fetch if you don't have a safe backend setup yet
-                await fetch(WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                // Save to local storage
-                requestedGames.push(name.toLowerCase());
-                localStorage.setItem('requestedGames', JSON.stringify(requestedGames));
-
-                statusText.style.color = "#4ade80";
-                statusText.innerText = "Game suggested successfully!";
-                form.reset();
-
-            } catch (err) {
-                statusText.style.color = "#ff4d4d";
-                statusText.innerText = "Error sending request. Please try again later.";
-            }
-        });
-    </script>
 </body>
 </html>
