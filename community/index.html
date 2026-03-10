@@ -1,29 +1,34 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset='UTF-8'>
-<title>Community</title>
-<link rel='stylesheet' href='../assets/style.css'>
-<script src='../assets/main.js' defer></script>
-<script src='community.js' defer></script>
-</head>
+const requestForm = document.getElementById('suggestion-form');
 
-<body>
+requestForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const gName = document.getElementById('game-name').value;
+    const gLink = document.getElementById('game-link').value;
+    
+    // Check local storage
+    const history = JSON.parse(localStorage.getItem('requestedGames') || '[]');
+    if (history.includes(gName)) {
+        alert("You've already requested this game!");
+        return;
+    }
 
-<header>
-<h1>Community</h1>
-<a href='https://discord.gg/d83JBdMsGq'>Join Discord</a>
-</header>
+    const payload = {
+        content: "🆕 **New Game Request!**",
+        embeds: [{
+            title: gName,
+            description: document.getElementById('game-desc').value,
+            url: gLink,
+            color: 10309085
+        }]
+    };
 
-<div>
+    await fetch('https://discord.com/api/webhooks/1481011364662214703/-ASSNHvq_DcYuVPX_BL3_RKuzBIo-MG7Ek8EvkE09ldKu1gQbsc-WU5fOMorgLkQsch8', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
 
-<input id='GameName' placeholder='Game Name'>
-<input id='GameLink' placeholder='Game Link'>
-<textarea id='GameDesc' placeholder='Description'></textarea>
-
-<button id='Request'>Request Game</button>
-
-</div>
-
-</body>
-</html>
+    history.push(gName);
+    localStorage.setItem('requestedGames', JSON.stringify(history));
+    alert("Request sent to Discord!");
+});
