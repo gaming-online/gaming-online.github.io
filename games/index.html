@@ -1,36 +1,71 @@
-// Logic for games/index.html
-async function loadGames() {
-    const response = await fetch('../assets/games.json');
-    const games = await response.json();
-    const container = document.getElementById('games-grid');
-    const favorites = JSON.parse(localStorage.getItem('favGames') || '[]');
-
-    function render(filterTag = '', searchQuery = '') {
-        container.innerHTML = '';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Games | Gaming.Online</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .search-bar { width: 100%; padding: 15px; border-radius: 10px; border: none; background: var(--bg-card); color: white; margin-bottom: 20px; }
+        .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .game-card { background: var(--bg-card); border-radius: 12px; overflow: hidden; transition: 0.3s; }
+        .game-card:hover { transform: translateY(-5px); border: 1px solid var(--accent-purple); }
+        .game-card img { width: 100%; height: 150px; object-fit: cover; }
+        .game-info { padding: 15px; }
+        .favorite-btn { color: gold; cursor: pointer; float: right; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../">← Back</a>
+        <input type="text" id="search" class="search-bar" placeholder="Search games...">
         
-        // Sort: Favorites first
-        const sortedGames = [...games].sort((a, b) => {
-            return favorites.includes(b.title) - favorites.includes(a.title);
-        });
+        <h3>Favorites</h3>
+        <div id="favorites-grid" class="game-grid"></div>
 
-        sortedGames.forEach(game => {
-            if (filterTag && !game.tags.includes(filterTag)) return;
-            if (searchQuery && !game.title.toLowerCase().includes(searchQuery.toLowerCase())) return;
+        <hr style="border: 0.5px solid #333; margin: 40px 0;">
 
-            const isFav = favorites.includes(game.title);
-            const card = `
-                <div class="game-card ${isFav ? 'pinned' : ''}">
-                    <img src="${game.thumbnail}" alt="${game.title}">
-                    <div class="card-info">
-                        <h3>${game.title}</h3>
-                        <div class="tags">
-                            ${game.tags.map(t => `<span class="tag" style="background:${stringToColor(t)}">${t}</span>`).join('')}
+        <h3>All Games</h3>
+        <div id="games-grid" class="game-grid"></div>
+    </div>
+
+    <script>
+        async function loadGames() {
+            const response = await fetch('../assets/games.json');
+            const games = await response.json();
+            const favorites = JSON.parse(localStorage.getItem('favGames') || '[]');
+
+            const renderGrid = (data, containerId) => {
+                const container = document.getElementById(containerId);
+                container.innerHTML = data.map(game => `
+                    <div class="game-card">
+                        <img src="${game.thumbnail}" alt="${game.title}">
+                        <div class="game-info">
+                            <span class="favorite-btn" onclick="toggleFav('${game.title}')">${favorites.includes(game.title) ? '★' : '☆'}</span>
+                            <h4 onclick="location.href='play.html?game=${encodeURIComponent(game.title)}'" style="cursor:pointer">${game.title}</h4>
                         </div>
-                        <a href="game?name=${encodeURIComponent(game.title)}" class="play-btn">Play</a>
                     </div>
-                </div>`;
-            container.innerHTML += card;
-        });
-    }
-    // ... render logic ...
-}
+                `).join('');
+            };
+
+            renderGrid(games, 'games-grid');
+            renderGrid(games.filter(g => favorites.includes(g.title)), 'favorites-grid');
+
+            // Search logic
+            document.getElementById('search').addEventListener('input', (e) => {
+                const filtered = games.filter(g => g.title.toLowerCase().includes(e.target.value.toLowerCase()));
+                renderGrid(filtered, 'games-grid');
+            });
+        }
+
+        function toggleFav(title) {
+            let favs = JSON.parse(localStorage.getItem('favGames') || '[]');
+            if (favs.includes(title)) favs = favs.filter(t => t !== title);
+            else favs.push(title);
+            localStorage.setItem('favGames', JSON.stringify(favs));
+            loadGames();
+        }
+
+        loadGames();
+    </script>
+    <script src="../main.js"></script>
+</body>
+</html>
