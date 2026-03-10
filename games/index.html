@@ -1,127 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Games | Gaming.Online</title>
-    <link rel="stylesheet" href="../style.css">
+<meta charset='UTF-8'>
+<title>Games</title>
+<link rel='stylesheet' href='../assets/style.css'>
+<script src='../assets/main.js' defer></script>
+<script src='games.js' defer></script>
 </head>
+
 <body>
-    <nav>
-        <h2>Gaming.Online</h2>
-        <div class="nav-links">
-            <a href="../">Home</a>
-            <a href="../community">Community</a>
-        </div>
-    </nav>
-    
-    <div class="container">
-        <h1>All Games</h1>
-        
-        <div class="search-container" style="margin: 20px auto;">
-            <input type="text" id="searchInput" placeholder="Search for games...">
-            <button id="clearFilterBtn" class="btn" style="display:none; margin: 0;">Clear Filters</button>
-        </div>
 
-        <div id="gamesGrid" class="games-grid">
-            </div>
-    </div>
+<header>
+<h1>Games</h1>
+<input id='Search' placeholder='Search games...'>
+</header>
 
-    <script src="../main.js"></script>
-    <script>
-        // Function to generate a consistent color based on the tag name
-        function stringToColor(str) {
-            let hash = 0;
-            for (let i = 0; i < str.length; i++) {
-                hash = str.charCodeAt(i) + ((hash << 5) - hash);
-            }
-            return `hsl(${hash % 360}, 70%, 50%)`;
-        }
+<div id='GameGrid' class='GameGrid'></div>
 
-        async function loadGames() {
-            try {
-                const response = await fetch('../assets/games.json');
-                const games = await response.json();
-                
-                const grid = document.getElementById('gamesGrid');
-                const searchInput = document.getElementById('searchInput');
-                const clearBtn = document.getElementById('clearFilterBtn');
-                
-                // Check if we arrived from a tag click on another page
-                const urlParams = new URLSearchParams(window.location.search);
-                let activeTag = urlParams.get('tag');
-
-                if (activeTag) clearBtn.style.display = 'block';
-
-                function render() {
-                    grid.innerHTML = '';
-                    const query = searchInput.value.toLowerCase();
-                    let favorites = JSON.parse(localStorage.getItem('favGames')) || [];
-
-                    // Filter and Sort
-                    let displayGames = games.filter(g => {
-                        const matchesSearch = g.title.toLowerCase().includes(query) || g.description.toLowerCase().includes(query);
-                        const matchesTag = activeTag ? g.tags.includes(activeTag) : true;
-                        return matchesSearch && matchesTag;
-                    }).sort((a, b) => {
-                        // Pin favorites to top
-                        const aFav = favorites.includes(a.title);
-                        const bFav = favorites.includes(b.title);
-                        if (aFav && !bFav) return -1;
-                        if (!aFav && bFav) return 1;
-                        return 0;
-                    });
-
-                    displayGames.forEach(game => {
-                        const card = document.createElement('div');
-                        card.className = 'game-card';
-                        card.onclick = () => window.location.href = `game.html?play=${encodeURIComponent(game.title)}`;
-                        
-                        const isFav = favorites.includes(game.title);
-
-                        card.innerHTML = `
-                            <img src="${game.thumbnail}" alt="${game.title}" class="game-thumb">
-                            <div class="game-info">
-                                <div class="game-title">
-                                    ${game.title}
-                                    <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFav(event, '${game.title}')">★</button>
-                                </div>
-                                <div class="tags-container">
-                                    ${game.tags.map(tag => `<span class="tag" style="background-color: ${stringToColor(tag)}">${tag}</span>`).join('')}
-                                </div>
-                            </div>
-                        `;
-                        grid.appendChild(card);
-                    });
-                }
-
-                // Handle favorites
-                window.toggleFav = (e, title) => {
-                    e.stopPropagation(); // Stop the card click event from firing
-                    let favorites = JSON.parse(localStorage.getItem('favGames')) || [];
-                    if (favorites.includes(title)) {
-                        favorites = favorites.filter(t => t !== title);
-                    } else {
-                        favorites.push(title);
-                    }
-                    localStorage.setItem('favGames', JSON.stringify(favorites));
-                    render(); // Re-render to update order and stars
-                };
-
-                // Event Listeners
-                searchInput.addEventListener('input', render);
-                clearBtn.addEventListener('click', () => {
-                    window.location.href = 'index.html'; // Clear URL params
-                });
-
-                render();
-            } catch (error) {
-                console.error('Error loading games:', error);
-                document.getElementById('gamesGrid').innerHTML = '<p>Failed to load games data.</p>';
-            }
-        }
-
-        loadGames();
-    </script>
 </body>
 </html>
