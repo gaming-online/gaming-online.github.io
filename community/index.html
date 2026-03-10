@@ -1,34 +1,56 @@
-const requestForm = document.getElementById('suggestion-form');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Community | Gaming.Online</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .form-group { margin-bottom: 15px; }
+        input, textarea { width: 100%; padding: 10px; background: var(--bg-card); border: 1px solid #333; color: white; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container" style="max-width: 600px;">
+        <a href="../">← Back</a>
+        <h2>Join the Community</h2>
+        <a href="https://discord.gg/d83JBdMsGq" class="btn" style="display:inline-block; margin-bottom: 40px;">Join Discord</a>
 
-requestForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const gName = document.getElementById('game-name').value;
-    const gLink = document.getElementById('game-link').value;
-    
-    // Check local storage
-    const history = JSON.parse(localStorage.getItem('requestedGames') || '[]');
-    if (history.includes(gName)) {
-        alert("You've already requested this game!");
-        return;
-    }
+        <h3>Request a Game</h3>
+        <div id="request-form">
+            <div class="form-group"><input type="text" id="gName" placeholder="Game Name"></div>
+            <div class="form-group"><textarea id="gDesc" placeholder="Description"></textarea></div>
+            <div class="form-group"><input type="text" id="gLink" placeholder="Game Link (URL)"></div>
+            <button class="btn" onclick="sendRequest()">Send Request</button>
+        </div>
+        <p id="msg"></p>
+    </div>
 
-    const payload = {
-        content: "🆕 **New Game Request!**",
-        embeds: [{
-            title: gName,
-            description: document.getElementById('game-desc').value,
-            url: gLink,
-            color: 10309085
-        }]
-    };
+    <script>
+        async function sendRequest() {
+            if (localStorage.getItem('hasRequested')) {
+                document.getElementById('msg').innerText = "You have already submitted a request!";
+                return;
+            }
 
-    await fetch('https://discord.com/api/webhooks/1481011364662214703/-ASSNHvq_DcYuVPX_BL3_RKuzBIo-MG7Ek8EvkE09ldKu1gQbsc-WU5fOMorgLkQsch8', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-    });
+            const name = document.getElementById('gName').value;
+            const desc = document.getElementById('gDesc').value;
+            const link = document.getElementById('gLink').value;
 
-    history.push(gName);
-    localStorage.setItem('requestedGames', JSON.stringify(history));
-    alert("Request sent to Discord!");
-});
+            const webhook = "https://discord.com/api/webhooks/1481011364662214703/-ASSNHvq_DcYuVPX_BL3_RKuzBIo-MG7Ek8EvkE09ldKu1gQbsc-WU5fOMorgLkQsch8";
+            
+            const payload = {
+                content: `**New Game Request!**\n**Name:** ${name}\n**Desc:** ${desc}\n**Link:** ${link}`
+            };
+
+            await fetch(webhook, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            localStorage.setItem('hasRequested', 'true');
+            alert("Request sent!");
+        }
+    </script>
+    <script src="../main.js"></script>
+</body>
+</html>
