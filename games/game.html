@@ -1,211 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Play | Gaming.Online</title>
-    <link rel="stylesheet" href="../style.css">
-    <style>
-        .player-layout {
-            display: flex;
-            width: 100%;
-            gap: 20px;
-            margin-top: 20px;
-        }
-        .sidebar {
-            width: 200px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .sidebar .game-card { width: 100%; }
-        .sidebar .game-thumb { height: 100px; }
-        
-        .main-player {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .iframe-container {
-            width: 100%;
-            height: 600px;
-            background: #000;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 2px solid var(--accent-purple);
-        }
-        iframe { width: 100%; height: 100%; border: none; }
-        
-        .controls {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-        
-        /* Modal for Share Link */
-        #shareModal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 100;
-        }
-        .modal-content {
-            background: var(--bg-card); padding: 30px; border-radius: 12px; text-align: center;
-        }
-    </style>
+<meta charset='UTF-8'>
+<title>Game</title>
+<link rel='stylesheet' href='../assets/style.css'>
+<script src='../assets/main.js' defer></script>
+<script src='game.js' defer></script>
 </head>
+
 <body>
-    <nav>
-        <h2 id="navTitle">Gaming.Online</h2>
-        <div class="nav-links">
-            <a href="index.html">← Return to Games</a>
-        </div>
-    </nav>
-    
-    <div class="container" style="max-width: 1400px;">
-        <div class="player-layout">
-            <div id="leftSidebar" class="sidebar"></div>
 
-            <div class="main-player">
-                <div class="iframe-container">
-                    <iframe id="gameFrame" src="" allowfullscreen></iframe>
-                </div>
-                
-                <div class="controls">
-                    <button class="btn" onclick="document.getElementById('gameFrame').requestFullscreen()">📺 Fullscreen</button>
-                    <button class="btn" id="favBtn" onclick="toggleCurrentFav()">★ Favorite</button>
-                    <button class="btn" onclick="showShare()">🔗 Share</button>
-                </div>
+<div class='GameWindow'>
+<div class='GameControls'>
+<button id='Fullscreen'>Fullscreen</button>
+<button id='Favorite'>Favorite</button>
+<button id='Share'>Share</button>
+<a href='../games'>Return</a>
+</div>
 
-                <div style="background: var(--bg-card); padding: 20px; border-radius: 12px; text-align: left;">
-                    <h2 id="gameTitle">Loading...</h2>
-                    <p id="gameDesc" style="color: var(--text-muted); margin: 10px 0;"></p>
-                    <div id="gameTags" class="tags-container"></div>
-                </div>
-            </div>
+<iframe id='GameFrame'></iframe>
 
-            <div id="rightSidebar" class="sidebar"></div>
-        </div>
-    </div>
+<div id='GameInfo'></div>
 
-    <div id="shareModal">
-        <div class="modal-content">
-            <h3>Share this Game</h3>
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <input type="text" id="shareInput" readonly>
-                <button class="btn" onclick="copyShare()">Copy</button>
-            </div>
-            <button class="btn" style="background: #333; margin-top: 15px;" onclick="document.getElementById('shareModal').style.display='none'">Close</button>
-        </div>
-    </div>
+</div>
 
-    <script src="../main.js"></script>
-    <script>
-        let currentGameData = null;
-
-        // Hash function for colors (same as index.html)
-        function stringToColor(str) {
-            let hash = 0;
-            for (let i = 0; i < str.length; i++) { hash = str.charCodeAt(i) + ((hash << 5) - hash); }
-            return `hsl(${hash % 360}, 70%, 50%)`;
-        }
-
-        async function initGame() {
-            const params = new URLSearchParams(window.location.search);
-            const gameTitle = params.get('play');
-            
-            if (!gameTitle) return window.location.href = 'index.html';
-
-            const response = await fetch('../assets/games.json');
-            const games = await response.json();
-            
-            currentGameData = games.find(g => g.title === gameTitle);
-            if (!currentGameData) return window.location.href = 'index.html';
-
-            // Populate Main Details
-            document.title = `${currentGameData.title} | Gaming.Online`;
-            document.getElementById('navTitle').innerText = currentGameData.title;
-            document.getElementById('gameTitle').innerText = currentGameData.title;
-            document.getElementById('gameDesc').innerText = currentGameData.description;
-            document.getElementById('gameFrame').src = currentGameData.iframe;
-            
-            // Generate Tags (clickable)
-            const tagsDiv = document.getElementById('gameTags');
-            currentGameData.tags.forEach(tag => {
-                tagsDiv.innerHTML += `<a href="index.html?tag=${encodeURIComponent(tag)}" class="tag" style="background-color: ${stringToColor(tag)}">${tag}</a>`;
-            });
-
-            checkFavStatus();
-            populateSidebars(games);
-        }
-
-        function populateSidebars(allGames) {
-            // Find games with at least 1 matching tag, excluding the current game
-            const related = allGames.filter(g => 
-                g.title !== currentGameData.title && 
-                g.tags.some(t => currentGameData.tags.includes(t))
-            );
-
-            // Shuffle array
-            for (let i = related.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [related[i], related[j]] = [related[j], related[i]];
-            }
-
-            const left = document.getElementById('leftSidebar');
-            const right = document.getElementById('rightSidebar');
-
-            // Split related games into left and right sidebars (max 3 each for neatness)
-            related.slice(0, 3).forEach(g => createSidebarCard(g, left));
-            related.slice(3, 6).forEach(g => createSidebarCard(g, right));
-        }
-
-        function createSidebarCard(game, container) {
-            const card = document.createElement('div');
-            card.className = 'game-card';
-            card.onclick = () => window.location.href = `game.html?play=${encodeURIComponent(game.title)}`;
-            card.innerHTML = `
-                <img src="${game.thumbnail}" alt="${game.title}" class="game-thumb">
-                <div style="padding: 10px; font-size: 0.9rem; font-weight: bold;">${game.title}</div>
-            `;
-            container.appendChild(card);
-        }
-
-        function checkFavStatus() {
-            let favorites = JSON.parse(localStorage.getItem('favGames')) || [];
-            const btn = document.getElementById('favBtn');
-            if (favorites.includes(currentGameData.title)) {
-                btn.style.color = "#ffd700";
-                btn.innerText = "★ Favorited";
-            } else {
-                btn.style.color = "white";
-                btn.innerText = "☆ Favorite";
-            }
-        }
-
-        window.toggleCurrentFav = () => {
-            let favorites = JSON.parse(localStorage.getItem('favGames')) || [];
-            if (favorites.includes(currentGameData.title)) {
-                favorites = favorites.filter(t => t !== currentGameData.title);
-            } else {
-                favorites.push(currentGameData.title);
-            }
-            localStorage.setItem('favGames', JSON.stringify(favorites));
-            checkFavStatus();
-        };
-
-        window.showShare = () => {
-            document.getElementById('shareInput').value = window.location.href;
-            document.getElementById('shareModal').style.display = 'flex';
-        };
-
-        window.copyShare = () => {
-            const input = document.getElementById('shareInput');
-            input.select();
-            document.execCommand('copy');
-            alert("Link copied to clipboard!");
-        };
-
-        initGame();
-    </script>
 </body>
 </html>
