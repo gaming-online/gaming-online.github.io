@@ -1,69 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Games | Gaming.Online</title>
     <link rel="stylesheet" href="../style.css">
-    <style>
-        .search-bar { width: 100%; padding: 15px; border-radius: 10px; border: none; background: var(--bg-card); color: white; margin-bottom: 20px; }
-        .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-        .game-card { background: var(--bg-card); border-radius: 12px; overflow: hidden; transition: 0.3s; }
-        .game-card:hover { transform: translateY(-5px); border: 1px solid var(--accent-purple); }
-        .game-card img { width: 100%; height: 150px; object-fit: cover; }
-        .game-info { padding: 15px; }
-        .favorite-btn { color: gold; cursor: pointer; float: right; }
-    </style>
 </head>
 <body>
     <div class="container">
-        <a href="../">← Back</a>
-        <input type="text" id="search" class="search-bar" placeholder="Search games...">
-        
-        <h3>Favorites</h3>
-        <div id="favorites-grid" class="game-grid"></div>
+        <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+            <a href="../" style="color: white; text-decoration: none;">← Back</a>
+            <input type="text" id="gameSearch" placeholder="Search games..." style="padding: 10px; border-radius: 5px; border: none; width: 300px;">
+        </header>
 
-        <hr style="border: 0.5px solid #333; margin: 40px 0;">
+        <div id="favoritesSection" style="margin-bottom: 40px; display: none;">
+            <h2 style="text-align: left;">Pinned Games</h2>
+            <div id="favoritesGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;"></div>
+            <hr style="border: 0.5px solid #222; margin-top: 40px;">
+        </div>
 
-        <h3>All Games</h3>
-        <div id="games-grid" class="game-grid"></div>
+        <div id="gameGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
+            </div>
     </div>
 
     <script>
         async function loadGames() {
             const response = await fetch('../assets/games.json');
             const games = await response.json();
-            const favorites = JSON.parse(localStorage.getItem('favGames') || '[]');
+            const grid = document.getElementById('gameGrid');
 
-            const renderGrid = (data, containerId) => {
-                const container = document.getElementById(containerId);
-                container.innerHTML = data.map(game => `
-                    <div class="game-card">
-                        <img src="${game.thumbnail}" alt="${game.title}">
-                        <div class="game-info">
-                            <span class="favorite-btn" onclick="toggleFav('${game.title}')">${favorites.includes(game.title) ? '★' : '☆'}</span>
-                            <h4 onclick="location.href='play.html?game=${encodeURIComponent(game.title)}'" style="cursor:pointer">${game.title}</h4>
-                        </div>
+            games.forEach(game => {
+                const card = document.createElement('div');
+                card.className = 'game-card';
+                card.style = "background: var(--bg-accent); padding: 15px; border-radius: 12px; cursor: pointer;";
+                card.innerHTML = `
+                    <img src="${game.thumbnail}" style="width: 100%; border-radius: 8px;">
+                    <h3 style="margin: 10px 0 5px 0;">${game.title}</h3>
+                    <div class="tags">
+                        ${game.tags.map(tag => `<span style="font-size: 0.7rem; background: var(--purple-main); padding: 2px 6px; border-radius: 4px; margin-right: 5px;">${tag}</span>`).join('')}
                     </div>
-                `).join('');
-            };
-
-            renderGrid(games, 'games-grid');
-            renderGrid(games.filter(g => favorites.includes(g.title)), 'favorites-grid');
-
-            // Search logic
-            document.getElementById('search').addEventListener('input', (e) => {
-                const filtered = games.filter(g => g.title.toLowerCase().includes(e.target.value.toLowerCase()));
-                renderGrid(filtered, 'games-grid');
+                `;
+                card.onclick = () => window.location.href = `game?id=${encodeURIComponent(game.title)}`;
+                grid.appendChild(card);
             });
         }
-
-        function toggleFav(title) {
-            let favs = JSON.parse(localStorage.getItem('favGames') || '[]');
-            if (favs.includes(title)) favs = favs.filter(t => t !== title);
-            else favs.push(title);
-            localStorage.setItem('favGames', JSON.stringify(favs));
-            loadGames();
-        }
-
         loadGames();
     </script>
     <script src="../main.js"></script>
