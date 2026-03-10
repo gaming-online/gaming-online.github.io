@@ -3,6 +3,7 @@
     "title": "Stickman Hook",
     "description": "Be a stickman and use your hook to swing!",
     "thumbnail": "assets/stickman-hook.png",
-    "iframe": "https://db2.quackprep.org/2025/unity4/cubecraft-survival/pre.html"
+    "iframe": "https://db2.quackprep.org/2025/unity4/cubecraft-survival/pre.html",
+    "tags": ["Survival", "Sandbox"]
   }
 ]
