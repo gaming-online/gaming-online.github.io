@@ -1,0 +1,26 @@
+:root {
+    --bg: #0b0a12;
+    --card: #161522;
+    --accent: #9d4edd;
+    --text: #ffffff;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Quicksand', sans-serif;
+    margin: 0;
+}
+
+.menu-card {
+    background: var(--card);
+    border: 2px solid transparent;
+    transition: 0.3s;
+    border-radius: 15px;
+}
+
+.menu-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(157, 78, 221, 0.2);
+}
