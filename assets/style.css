@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap');
+
+body{
+background:#0a0a0f;
+color:white;
+font-family:'Outfit',sans-serif;
+margin:0;
+}
+
+header{
+text-align:center;
+padding:40px;
+}
+
+.Logo{
+width:90px;
+}
+
+.HomeButtons{
+display:flex;
+justify-content:center;
+gap:30px;
+margin-top:60px;
+}
+
+.MainButton{
+background:#1a1a26;
+padding:20px 40px;
+border-radius:12px;
+text-decoration:none;
+color:white;
+font-size:20px;
+transition:.2s;
+border:1px solid #2a2a40;
+}
+
+.MainButton:hover{
+background:#2a2a40;
+box-shadow:0 0 12px #7a5cff;
+}
+
+.GameGrid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+gap:20px;
+padding:30px;
+}
+
+.GameCard{
+background:#14141d;
+border-radius:10px;
+overflow:hidden;
+cursor:pointer;
+border:1px solid #2b2b3a;
+}
+
+.GameCard img{
+width:100%;
+}
+
+.GameCard h3{
+padding:10px;
+}
+
+.Tag{
+display:inline-block;
+padding:4px 8px;
+border-radius:6px;
+font-size:12px;
+margin:3px;
+background:#6a4cff;
+}
